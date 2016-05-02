@@ -88,5 +88,33 @@ with open(fname, 'r') as rf:
 # then the visualization code...
 ~~~
 
+# Coercing numeric values with pandas
+
+The [2014 SAT score data](data/schools/sat-2014.csv) is an example of annoyingly difficult dirty data. The columns contain a mix of numbers and things like asterisks, which need to be cleared out if pandas is to typecast a column as all numbers/floats/etc.
+
+The coercion can be done when __read_csv()__ is called; [check out the documentation for all of its arguments](http://pandas.pydata.org/pandas-docs/stable/generated/pandas.read_csv.html).
+
+One argument is __na_values__, which let's us specify strings values that should be considered as "not-a-number" values. Such as `'NA'` or `'*'`:
+
+Here's the import without specifying `na_values`:
+
+
+~~~py
+from os.path import join
+import pandas as pd
+fname = join('data', 'schools', 'sat-2014.csv')
+adf = pd.read_csv(fname)
+bdf = pd.read_csv(fname, na_values=['*'])
+~~~
+
+Compare the `dtypes` attributes of `adf` and `bdf` -- many more columns of the `bdf` dataframe are typecasted as numbers.
+
+Now it's easy to filter the SAT results by schools that have a minimum number of test takers:
+
+~~~py
+cdf = bdf[bdf['number_of_test_takers'] >= 20]
+~~~
+
+
 
 
