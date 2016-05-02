@@ -52,3 +52,41 @@ The [data](data) folder contains several datasets, extracted and somewhat normal
   - Sources:
     - [Legislator spreadsheet from Sunlight Foundation](https://sunlightlabs.github.io/congress/index.html#legislator-spreadsheet). 
     - [Twitter API and t-tool](https://github.com/sferik/t)
+
+
+
+# Ad-hoc examples (to get their own notebook)
+
+
+Typecasting dates during the pandas import:
+
+~~~py
+from os.path import join
+import matplotlib.pyplot as plt 
+import pandas as pd
+fname = join('data', 'stocks', 'YHOO.csv')
+# must specify that the 'Date' column is actually a date
+# and pandas will try its best to convert it
+df = pd.read_csv(fname, parse_dates=['Date'])
+fig, ax = plt.subplots()
+ax.plot(df['Date'], df['Adj Close'])
+~~~
+
+Without pandas, here's what that typecasting would look like:
+
+
+~~~py
+from os.path import join
+from datetime import datetime
+import csv
+fname = join('data', 'stocks', 'YHOO.csv')
+with open(fname, 'r') as rf:  
+    data = list(csv.DictReader(fname))
+    for d in data:
+        d['Date'] = datetime.strptime(d['Date'], '%Y-%m-%d')
+        d['Adj Close'] = float(d['Adj Close'])
+# then the visualization code...
+~~~
+
+
+
